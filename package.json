@@ -139,7 +139,8 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "codesandbox:start:api": "yarn tsnode:not-instrumented --files backend/app.ts",
-    "codesandbox:start": "NODE_ENV=development TSC_COMPILE_ON_ERROR=true concurrently \"react-scripts start\" yarn:start:api:codesandbox"
+    "codesandbox:start": "NODE_ENV=development TSC_COMPILE_ON_ERROR=true concurrently \"react-scripts start\" yarn:start:api:codesandbox",
+    "cypr": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open"
   },
   "eslintConfig": {
     "env": {

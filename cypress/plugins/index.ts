@@ -10,6 +10,16 @@ export default (on, config) => {
   config.env.defaultPassword = process.env.SEED_DEFAULT_USER_PASSWORD;
   config.env.paginationPageSize = process.env.PAGINATION_PAGE_SIZE;
 
+  on("before:browser:launch", (browser: any, launchOptions: any) => {
+
+    if (browser.name === "chrome") {
+      launchOptions.args.push("--remote-debugging-port=9222");
+
+      // whatever you return here becomes the new launch options
+      return launchOptions;
+    }
+  });
+
   const testDataApiEndpoint = `${config.env.apiUrl}/testData`;
 
   const queryDatabase = ({ entity, query }, callback) => {

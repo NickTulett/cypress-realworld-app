@@ -11,6 +11,18 @@
       "protocol": "inspector",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "urlFilter": "http://localhost:3000/*",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": false,
+      "skipFiles": [
+        "cypress_runner.js"
+      ]
     }
   ]
 }

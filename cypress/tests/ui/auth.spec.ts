@@ -2,6 +2,7 @@ import { User } from "../../../src/models";
 import { isMobile } from "../../support/utils";
 
 describe("User Sign-up and Login", function () {
+  debugger;
   beforeEach(function () {
     cy.task("db:seed");
 
@@ -9,7 +10,6 @@ describe("User Sign-up and Login", function () {
     cy.route("POST", "/users").as("signup");
     cy.route("POST", "/bankAccounts").as("createBankAccount");
   });
-
   it("should redirect unauthenticated user to signin page", function () {
     cy.visit("/personal");
     cy.location("pathname").should("equal", "/signin");
@@ -48,7 +48,7 @@ describe("User Sign-up and Login", function () {
     cy.getBySel("signup-last-name").type(userInfo.lastName);
     cy.getBySel("signup-username").type(userInfo.username);
     cy.getBySel("signup-password").type(userInfo.password);
-    cy.getBySel("signup-confirmPassword").type(userInfo.password);;
+    cy.getBySel("signup-confirmPassword").type(userInfo.password);
     cy.getBySel("signup-submit").click();
     cy.wait("@signup");
 

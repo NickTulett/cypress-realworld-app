@@ -122,6 +122,58 @@ To generate a code coverage report:
 1. Run `yarn cypress:run --env coverage=true` and wait for the test run to complete.
 2. Once the test run is complete, you can view the report at `coverage/index.html`.
 
+## Debugging
+
+To debug the tests in Chrome Developer Tools:
+
+1. Open CDT at the Sources tab
+2. Add the project `cypress` folder to the Filesystem workspace
+3. Approve
+4. Open scripts in the `tests` folder and add breakpoints as required
+
+To debug in Visual Studio Code:
+
+1. Add `"cypr": "CYPRESS_REMOTE_DEBUGGING_PORT=9222 cypress open"` to the scripts in `package.json`
+2. Add another option to `launch.json`:
+```
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Chrome",
+      "port": 9222,
+      "urlFilter": "http://localhost:3000/*",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": false,
+      "skipFiles": [
+        "cypress_runner.js"
+      ]
+    }
+  ```
+3. Add debug port options to `plugins/index.ts`:
+```  
+  on("before:browser:launch", (browser: any, launchOptions: any) => {
+
+    if (browser.name === "chrome") {
+      launchOptions.args.push("--remote-debugging-port=9222");
+
+      // whatever you return here becomes the new launch options
+      return launchOptions;
+    }
+  });
+```
+4. Launch the app with `yarn dev`
+5. Launch Cypress with `npm run cypr`
+6. Add `debugger;` to the script you want to debug
+7. Run that script in the Cypress runner
+8. In VSC debug with the `Attach to Chrome` configuration
+
+Note that: 
+
+1. Breakpoints aren't always dismissed properly in CDT - delete them from the Breakpoints panel to be sure
+2. Step Over does not seem to work properly - the Cypress runner is still in the "Paused in debugger" state
+3. Most Cypress scripts are procedural. There are few variables that you can interrogate while running in debug mode. These are more easily seen in stepping through the test in the Cypress runner after the end of the test run.
+
+
 ## License
 
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cypress-io/cypress/blob/master/LICENSE)
