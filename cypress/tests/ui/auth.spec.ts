@@ -1,8 +1,13 @@
 import { User } from "../../../src/models";
 import { isMobile } from "../../support/utils";
 
+Cypress.on("test:after:run", (attributes) => {
+  /* eslint-disable no-console */
+  console.log('Test "%s" has finished in %dms', attributes.title, attributes.duration);
+});
+
 describe("User Sign-up and Login", function () {
-  debugger;
+//   debugger;
   beforeEach(function () {
     cy.task("db:seed");
 
@@ -19,9 +24,15 @@ describe("User Sign-up and Login", function () {
     cy.database("find", "users").then((user: User) => {
       cy.login(user.username, "s3cret", true);
     });
-
+    let thirtyDaysFromNow =  Date.now()/1e3 + (30 * 24 * 3600);
     // Verify Session Cookie
-    cy.getCookie("connect.sid").should("have.property", "expiry");
+    // let expiryValue;
+    cy.getCookie("connect.sid")
+      .should((c) => {
+        expect(c).to.have.property("expiry");
+        expect(c.expiry).to.be.at.least(thirtyDaysFromNow);
+      }
+    
 
     // Logout User
     if (isMobile()) {
