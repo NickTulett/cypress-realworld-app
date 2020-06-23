@@ -27,12 +27,10 @@ describe("User Sign-up and Login", function () {
     let thirtyDaysFromNow =  Date.now()/1e3 + (30 * 24 * 3600);
     // Verify Session Cookie
     // let expiryValue;
-    cy.getCookie("connect.sid")
-      .should((c) => {
-        expect(c).to.have.property("expiry");
-        expect(c.expiry).to.be.at.least(thirtyDaysFromNow);
-      }
-    
+    cy.getCookie("connect.sid").should((c: any) => {
+      expect(c).to.have.property("expiry");
+      expect(c.expiry).to.be.at.least(thirtyDaysFromNow);
+    });
 
     // Logout User
     if (isMobile()) {
