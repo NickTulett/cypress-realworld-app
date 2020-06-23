@@ -3,6 +3,7 @@ import { isMobile } from "../../support/utils";
 
 type BankAccountsTestCtx = {
   user?: User;
+  firstAccountBankName?: string;
 };
 
 describe("Bank Accounts", function () {
@@ -19,6 +20,9 @@ describe("Bank Accounts", function () {
       ctx.user = user;
 
       return cy.loginByXstate(ctx.user.username);
+    });
+    cy.database("find", "bankaccounts").then((bankaccount: any) => {
+      ctx.firstAccountBankName = bankaccount.bankName;
     });
   });
 
@@ -41,7 +45,9 @@ describe("Bank Accounts", function () {
 
     cy.getBySelLike("bankaccount-list-item")
       .should("have.length", 2)
-      .eq(1)
+      .eq(0)
+      .should("contain", ctx.firstAccountBankName)
+      .next()
       .should("contain", "The Best Bank");
   });
 
@@ -79,6 +85,10 @@ describe("Bank Accounts", function () {
     cy.getBySelLike("delete").first().click();
     cy.wait("@deleteBankAccount");
     cy.getBySelLike("list-item").children().contains("Deleted");
+    cy.database("find", "bankaccounts").should((bankaccount: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      expect(bankaccount.isDeleted, "Account deletion").to.be.true;
+    });
   });
 
   // TODO: [enhancement] the onboarding modal assertion can be removed after adding "onboarded" flag to user profile

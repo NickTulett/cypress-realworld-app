@@ -7,7 +7,7 @@ Cypress.on("test:after:run", (attributes) => {
 });
 
 describe("User Sign-up and Login", function () {
-//   debugger;
+  //   debugger;
   beforeEach(function () {
     cy.task("db:seed");
 
@@ -24,12 +24,11 @@ describe("User Sign-up and Login", function () {
     cy.database("find", "users").then((user: User) => {
       cy.login(user.username, "s3cret", true);
     });
-    let thirtyDaysFromNow =  Date.now()/1e3 + (30 * 24 * 3600);
+    const thirtyDaysFromNow = Date.now() / 1e3 + 30 * 24 * 3600;
     // Verify Session Cookie
-    // let expiryValue;
-    cy.getCookie("connect.sid").should((c: any) => {
-      expect(c).to.have.property("expiry");
-      expect(c.expiry).to.be.at.least(thirtyDaysFromNow);
+    cy.getCookie("connect.sid").should((c: Cypress.Cookie | null) => {
+      expect(c!, "cookie").to.have.property("expiry");
+      expect(c!.expiry, "cookie expiry").to.be.at.least(thirtyDaysFromNow);
     });
 
     // Logout User
